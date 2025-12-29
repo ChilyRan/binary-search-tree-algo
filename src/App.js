@@ -1,10 +1,11 @@
 
 import './App.css';
+import BSTApp from './pages/BST';
 
 function App() {
   return (
     <div className="App">
-     Hello World
+     <BSTApp />
     </div>
   );
 }

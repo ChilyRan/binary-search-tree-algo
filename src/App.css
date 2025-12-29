@@ -1,11 +1,23 @@
 .App {
   text-align: center;
+  background-color: red;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.tree-container {
+  width: 100vw;        /* Full width */
+  height: 100vh;       /* Full height */
+  overflow: auto;      /* Scroll only if content exceeds container */
 }
+
+.tree {
+  display: flex;
+  justify-content: center;  /* Center tree horizontally */
+  align-items: flex-start;  /* Start tree at top */
+  min-height: 100%;         /* Take full container height */
+}
+
+
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
