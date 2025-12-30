@@ -26,14 +26,16 @@ function insertNode(root, key, setOpen) {
 }
 
 // DELETE (pure)
-function deleteNode(root, key) {
+function deleteNode(root, key, setOpenDelete) {
     if (!root) return null;
-
+    if (root.key !== key) {
+        // node found
+        setOpenDelete(true);}
     if (key < root.key) {
-        return { ...root, left: deleteNode(root.left, key) };
+        return { ...root, left: deleteNode(root.left, key, setOpenDelete) };
     }
     if (key > root.key) {
-        return { ...root, right: deleteNode(root.right, key) };
+        return { ...root, right: deleteNode(root.right, key, setOpenDelete) };
     }
 
     // node found
@@ -163,6 +165,9 @@ export default function BSTTreePage() {
     const [value, setValue] = useState("");
     const [error, setError] = useState("");
     const [open, setOpen] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+
+    console.log("Current Tree Root:", value);
 
     const nodes = root ? layoutTree(root) : [];
     const [traversalResult, setTraversalResult] = useState([]);
@@ -172,7 +177,13 @@ export default function BSTTreePage() {
     };
     const handleClose = (event, reason) => {
         if (reason === "clickaway") return; // Ignore clickaway
+        if (open) { setValue(""); }
         setOpen(false);
+    };
+    const handleCloseDel = (event, reason) => {
+        if (reason === "clickaway") return; // Ignore clickaway
+        if (openDelete) { setValue(""); }
+        setOpenDelete(false);
     };
     console.log("Traversal Result:", nodes, traversalResult);
 
@@ -196,6 +207,16 @@ export default function BSTTreePage() {
             >
                 <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
                     The value already exists in the tree!
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={openDelete}
+                autoHideDuration={3000} // closes after 3 seconds
+                onClose={handleCloseDel}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert onClose={handleCloseDel} severity="error" sx={{ width: "100%" }}>
+                    In the tree doesn't have number {value}!
                 </Alert>
             </Snackbar>
             <Paper sx={{ p: 4, width: 900 }} elevation={6}>
@@ -222,7 +243,6 @@ export default function BSTTreePage() {
                             variant="contained"
                             onClick={() => {
                                 value && setRoot(insertNode(root, Number(value), setOpen));
-                                setValue("");
                                 value === "" ? setError("Please enter a value") : setError("");
                             }}
                             style={{ padding: "15px 20px 15px 20px" }}
@@ -236,8 +256,7 @@ export default function BSTTreePage() {
                             variant="contained"
                             color="error"
                             onClick={() => {
-                                value && setRoot(deleteNode(root, Number(value)));
-                                setValue("");
+                                value && setRoot(deleteNode(root, Number(value), setOpenDelete));
                                 value === "" ? setError("Please enter a value") : setError("");
                             }}
                         >
@@ -287,8 +306,7 @@ export default function BSTTreePage() {
                                 </Stack>
                                 <Typography variant="h6" align="center">
                                     {index < traversalResult.length - 1 ? " => " : ""}
-                                </Typography>
-                            </Stack>
+                                </Typography>                           </Stack>
                         ))
                     }
                 </Stack>
