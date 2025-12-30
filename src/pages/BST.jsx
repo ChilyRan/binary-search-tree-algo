@@ -28,9 +28,12 @@ function insertNode(root, key, setOpen) {
 // DELETE (pure)
 function deleteNode(root, key, setOpenDelete) {
     if (!root) return null;
+
+    console.log("Delete Root:", root, key);
     if (root.key !== key) {
-        // node found
         setOpenDelete(true);
+    }else{
+        setOpenDelete(false);
     }
     if (key < root.key) {
         return { ...root, left: deleteNode(root.left, key, setOpenDelete) };
