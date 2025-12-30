@@ -26,38 +26,76 @@ function insertNode(root, key, setOpen) {
 }
 
 // DELETE (pure)
+// function deleteNode(root, key, setOpenDelete) {
+//     if (root === null) return root;
+//     console.log("Delete Root:", root, key);
+
+//     if (root.key !== key) {
+//         setOpenDelete(true);
+//     }else{
+//         setOpenDelete(false);
+//     }
+//     if (key < root.key) {
+//         return { ...root, left: deleteNode(root.left, key, setOpenDelete) };
+//     }
+//     if (key > root.key) {
+//         return { ...root, right: deleteNode(root.right, key, setOpenDelete) };
+//     }
+
+//     // node found
+//     if (!root.left) return root.right;
+//     if (!root.right) return root.left;
+
+//     const successor = findMax(root.right);
+//     return {
+//         key: successor.key,
+//         left: root.left,
+//         right: deleteNode(root.right, successor.key)
+//     };
+// }
+
+// function findMax(node) {
+//     while (node.right) node = node.right;
+//     return node;
+// }
+
 function deleteNode(root, key, setOpenDelete) {
     if (!root) return null;
-
     console.log("Delete Root:", root, key);
+
     if (root.key !== key) {
         setOpenDelete(true);
     }else{
         setOpenDelete(false);
     }
+    
     if (key < root.key) {
         return { ...root, left: deleteNode(root.left, key, setOpenDelete) };
-    }
-    if (key > root.key) {
+    } else if (key > root.key) {
         return { ...root, right: deleteNode(root.right, key, setOpenDelete) };
+    } else {
+        // node found
+        setOpenDelete(false);
+
+        if (!root.left) return root.right;
+        if (!root.right) return root.left;
+
+        const successor = getSuccesor(root.right);
+        console.log("Successor:", successor, root.lef);
+        return {
+            key: successor.key,
+            left: root.left,
+            right: deleteNode(root.right, successor.key, setOpenDelete)
+        };
     }
-
-    // node found
-    if (!root.left) return root.right;
-    if (!root.right) return root.left;
-
-    const successor = findMin(root.right);
-    return {
-        key: successor.key,
-        left: root.left,
-        right: deleteNode(root.right, successor.key)
-    };
 }
 
-function findMin(node) {
+function getSuccesor(node) {
     while (node.left) node = node.left;
     return node;
 }
+
+
 /* ================= TRAVERSAL FUNCTIONS ================= */
 
 function postorderTraversal(node, result = []) {
