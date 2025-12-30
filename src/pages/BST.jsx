@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography, Paper, Stack } from "@mui/material";
+import { Box, Button, TextField, Typography, Paper, Stack, Alert, Snackbar } from "@mui/material";
 
 /* ================= BST PURE FUNCTIONS ================= */
 
@@ -9,15 +9,18 @@ function createNode(key) {
 }
 
 // INSERT (pure)
-function insertNode(root, key) {
+function insertNode(root, key, setOpen) {
     console.log("root", root, key)
     if (!root) return createNode(key);
+    if (root.key === key) {
+        setOpen(true);
+    }
 
     if (key < root.key) {
-        return { ...root, left: insertNode(root.left, key) };
+        return { ...root, left: insertNode(root.left, key, setOpen) };
     }
     if (key > root.key) {
-        return { ...root, right: insertNode(root.right, key) };
+        return { ...root, right: insertNode(root.right, key, setOpen) };
     }
     return root; // no duplicates
 }
@@ -159,6 +162,7 @@ export default function BSTTreePage() {
     const [root, setRoot] = useState(null);
     const [value, setValue] = useState("");
     const [error, setError] = useState("");
+    const [open, setOpen] = useState(false);
 
     const nodes = root ? layoutTree(root) : [];
     const [traversalResult, setTraversalResult] = useState([]);
@@ -166,7 +170,10 @@ export default function BSTTreePage() {
         const result = postorderTraversal(root, []);
         setTraversalResult(result);
     };
-
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") return; // Ignore clickaway
+        setOpen(false);
+    };
     console.log("Traversal Result:", nodes, traversalResult);
 
     return (
@@ -181,6 +188,16 @@ export default function BSTTreePage() {
                 height: "100%"
             }}
         >
+            <Snackbar
+                open={open}
+                autoHideDuration={3000} // closes after 3 seconds
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+                    The value already exists in the tree!
+                </Alert>
+            </Snackbar>
             <Paper sx={{ p: 4, width: 900 }} elevation={6}>
                 <Typography variant="h4" align="center" color="primary">
                     Binary Search Tree Visualization
@@ -193,7 +210,7 @@ export default function BSTTreePage() {
                             label="Value"
                             fullWidth
                             value={value}
-                            onChange={(e) => {setValue(e.target.value); setError("");}}
+                            onChange={(e) => { setValue(e.target.value); setError(""); }}
                         />
                         <Stack direction="row" justifyContent="flex-start" alignItems="center">
                             {error && <div style={{ color: "red", marginLeft: "5px" }}>{error}</div>}
@@ -204,7 +221,7 @@ export default function BSTTreePage() {
                         <Button
                             variant="contained"
                             onClick={() => {
-                                value && setRoot(insertNode(root, Number(value)));
+                                value && setRoot(insertNode(root, Number(value), setOpen));
                                 setValue("");
                                 value === "" ? setError("Please enter a value") : setError("");
                             }}
