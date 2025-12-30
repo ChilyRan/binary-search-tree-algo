@@ -30,7 +30,8 @@ function deleteNode(root, key, setOpenDelete) {
     if (!root) return null;
     if (root.key !== key) {
         // node found
-        setOpenDelete(true);}
+        setOpenDelete(true);
+    }
     if (key < root.key) {
         return { ...root, left: deleteNode(root.left, key, setOpenDelete) };
     }
@@ -177,12 +178,12 @@ export default function BSTTreePage() {
     };
     const handleClose = (event, reason) => {
         if (reason === "clickaway") return; // Ignore clickaway
-        if (open) { setValue(""); }
+        // if (open) { setValue(""); }
         setOpen(false);
     };
     const handleCloseDel = (event, reason) => {
         if (reason === "clickaway") return; // Ignore clickaway
-        if (openDelete) { setValue(""); }
+        // if (openDelete) { setValue(""); }
         setOpenDelete(false);
     };
     console.log("Traversal Result:", nodes, traversalResult);
@@ -205,7 +206,7 @@ export default function BSTTreePage() {
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
-                <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+                <Alert onClose={handleClose} variant="filled" severity="error" sx={{ width: "100%" }}>
                     The value already exists in the tree!
                 </Alert>
             </Snackbar>
@@ -215,8 +216,8 @@ export default function BSTTreePage() {
                 onClose={handleCloseDel}
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
-                <Alert onClose={handleCloseDel} severity="error" sx={{ width: "100%" }}>
-                    In the tree doesn't have number {value}!
+                <Alert onClose={handleCloseDel} variant="filled" severity="error" sx={{ width: "100%" }}>
+                   This number doesn't have in the tree!
                 </Alert>
             </Snackbar>
             <Paper sx={{ p: 4, width: 900 }} elevation={6}>
@@ -244,6 +245,7 @@ export default function BSTTreePage() {
                             onClick={() => {
                                 value && setRoot(insertNode(root, Number(value), setOpen));
                                 value === "" ? setError("Please enter a value") : setError("");
+                                value && setValue("");
                             }}
                             style={{ padding: "15px 20px 15px 20px" }}
                         >
@@ -258,6 +260,7 @@ export default function BSTTreePage() {
                             onClick={() => {
                                 value && setRoot(deleteNode(root, Number(value), setOpenDelete));
                                 value === "" ? setError("Please enter a value") : setError("");
+                                value && setValue("");
                             }}
                         >
                             Delete
