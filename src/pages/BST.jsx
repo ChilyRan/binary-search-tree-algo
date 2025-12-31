@@ -65,10 +65,10 @@ function deleteNode(root, key, setOpenDelete) {
 
     if (root.key !== key) {
         setOpenDelete(true);
-    }else{
+    } else {
         setOpenDelete(false);
     }
-    
+
     if (key < root.key) {
         return { ...root, left: deleteNode(root.left, key, setOpenDelete) };
     } else if (key > root.key) {
@@ -99,11 +99,16 @@ function getSuccesor(node) {
 /* ================= TRAVERSAL FUNCTIONS ================= */
 
 function postorderTraversal(node, result = []) {
+    console.log("Visiting Node:", node);
     if (!node) return result;
 
-    if (node.left) postorderTraversal(node.left, result);
+    console.log("Going Left:", node.left, "Going Right:", node.right);
+    if (node.left) {
+        postorderTraversal(node.left, result);
+    }
     if (node.right) postorderTraversal(node.right, result);
     result.push(node.key);
+    console.log("Added to Result:", node.key);
 
     return result;
 }
@@ -258,7 +263,7 @@ export default function BSTTreePage() {
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
                 <Alert onClose={handleCloseDel} variant="filled" severity="error" sx={{ width: "100%" }}>
-                   This number doesn't have in the tree!
+                    This number doesn't have in the tree!
                 </Alert>
             </Snackbar>
             <Paper sx={{ p: 4, width: 900 }} elevation={6}>
